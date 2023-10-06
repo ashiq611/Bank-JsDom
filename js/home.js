@@ -76,6 +76,78 @@ const inputClosePassword = document.querySelector(".form-input-password");
 
 // starts the work with Bismillah
 
+let currentAcc;
+
+function updateUI(){
+  displayMovements(currentAcc);
+  displaySumamry(currentAcc);
+  displayBalance(currentAcc)
+}
+
+
+/////////////////////////////////////////////////////////////
+// operation starts
+////////////////////
+
+
+// create username starts
+
+function createUsername(accounts){
+
+  accounts.forEach(account => {
+    account.username = account.owner.toLowerCase().split(" ").map(word => word.at(0)).join("")
+
+    console.log(account.username)
+  })
+
+}
+
+createUsername(accounts)
+
+
+// create username ends
+
+
+// login starts
+
+
+
+btnLogin.addEventListener('click', (e) => {
+  e.preventDefault();
+
+  currentAcc = accounts.find((account) => inputLoginUsername.value === account.username);
+
+  if(currentAcc?.password === Number(inputLoginPassword.value)){
+    // welcome msg
+
+    labelWelcome.textContent= `Welcome, ${currentAcc.owner.split(" ").at(0)}`
+
+    // update ui
+
+    containerApp.style.opacity = 1;
+
+    updateUI()
+  }else{
+    labelWelcome.textContent = 'Login Error'
+
+    // update ui
+
+    containerApp.style.opacity = 0;
+  }
+
+  inputLoginUsername.value = "";
+  inputLoginPassword.value = "";
+  inputLoginUsername.blur();
+  inputLoginPassword.blur();
+
+
+
+})
+
+
+// login ends
+
+
 // display Movements starts///////////
 
 function displayMovements (account){
@@ -99,7 +171,7 @@ function displayMovements (account){
 
 }
 
-displayMovements(accounts[0])
+
 
 
 // display Movements ends/////////////////
@@ -126,7 +198,7 @@ function displaySumamry(account){
 
 }
 
-displaySumamry(accounts[0])
+
 
 
 // display summarry ends
@@ -134,10 +206,66 @@ displaySumamry(accounts[0])
 // display balance starts
 
 
+function displayBalance (account){
+
+  account.balance = account.movements.reduce((acc,move) => acc + move)
+
+  labelBalance.textContent = `${account.balance}$`;
+
+}
+
+
+
 
 
 // display balance ends
 
+// /////////////////////////////////////////////////////////////
+// // operation starts
+// ////////////////////
+
+
+// // create username starts
+
+// function createUsername(accounts){
+
+//   accounts.forEach(account => {
+//     account.username = account.owner.toLowerCase().split(" ").map(word => word.at(0)).join("")
+
+//     console.log(account.username)
+//   })
+
+// }
+
+// createUsername(accounts)
+
+
+// // create username ends
+
+
+// // login starts
+
+
+
+// btnLogin.addEventListener('click', (e) => {
+//   e.preventDefault();
+
+//   currentAcc = accounts.find((account) => inputLoginUsername.value === account.username);
+
+//   if(currentAcc.password === Number(inputLoginPassword.value)){
+//     // welcome msg
+
+//     labelWelcome.textContent= `Welcome, ${currentAcc.owner.split(" ").at(0)}`
+
+//     // update ui
+
+//     containerApp.style.opacity = 1;
+//   }
+
+// })
+
+
+// // login ends
 
 
 
