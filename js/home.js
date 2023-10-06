@@ -57,6 +57,7 @@ const labelTimer = document.querySelector(".timer");
 
 const containerApp = document.querySelector(".app");
 const containerMovements = document.querySelector(".movements");
+const form = document.querySelector(".login");
 
 const btnLogin = document.querySelector(".login-btn");
 const btnLogout = document.querySelector(".logout");
@@ -127,6 +128,10 @@ btnLogin.addEventListener('click', (e) => {
     containerApp.style.opacity = 1;
 
     updateUI()
+
+    form.style.display = "none"
+
+
   }else{
     labelWelcome.textContent = 'Login Error'
 
@@ -146,6 +151,17 @@ btnLogin.addEventListener('click', (e) => {
 
 
 // login ends
+
+// logout starts
+
+btnLogout.addEventListener('click', () => {
+
+  containerApp.style.opacity = 0;
+
+  form.style.display = "flex";
+
+})
+// logout ends
 
 
 // display Movements starts///////////
