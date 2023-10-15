@@ -79,10 +79,10 @@ const inputClosePassword = document.querySelector(".form-input-password");
 
 let currentAcc;
 
-function updateUI(){
+function updateUI(currentAcc) {
   displayMovements(currentAcc);
   displaySumamry(currentAcc);
-  displayBalance(currentAcc)
+  displayBalance(currentAcc);
 }
 
 
@@ -127,13 +127,13 @@ btnLogin.addEventListener('click', (e) => {
 
     containerApp.style.opacity = 1;
 
-    updateUI()
+    updateUI(currentAcc);
 
     form.style.display = "none"
 
 
   }else{
-    labelWelcome.textContent = 'Login Error'
+    labelWelcome.textContent = 'Login Failed'
 
     // update ui
 
@@ -171,11 +171,13 @@ btnLogout.addEventListener('click', () => {
 
 // display Movements starts///////////
 
-function displayMovements (account){
+function displayMovements (account, sort = false){
 
   containerMovements.innerHTML= "";
 
-  account.movements.forEach((move,i) => {
+  const moves = sort ? account.movements.slice(0).sort((a,b) => a - b) : account.movements;
+
+  moves.forEach((move,i) => {
 
     const type = (move > 0) ? "deposit" : "withdrawal"
     const movementsHtml = `
@@ -241,52 +243,123 @@ function displayBalance (account){
 
 // display balance ends
 
-// /////////////////////////////////////////////////////////////
-// // operation starts
-// ////////////////////
+// transfer money starst
+
+btnTransfer.addEventListener('click', (e) =>{
+  e.preventDefault()
+
+  const recieverAcc = accounts.find((acc)=> acc.username === inputTransferTo.value);
+
+  const amount = Number(inputTransferAmount.value);
 
 
-// // create username starts
+  if(amount > 0 && amount <= currentAcc.balance && recieverAcc.username !== currentAcc.username && recieverAcc){
+    currentAcc.movements.push(-amount);
+    recieverAcc.movements.push(amount);
 
-// function createUsername(accounts){
+    updateUI(currentAcc);
 
-//   accounts.forEach(account => {
-//     account.username = account.owner.toLowerCase().split(" ").map(word => word.at(0)).join("")
+    labelWelcome.textContent = "Transaction Success";
+  }else{
+    labelWelcome.textContent = "Transaction Failed";
+  }
 
-//     console.log(account.username)
-//   })
+  // update dorker notification?????????
 
-// }
-
-// createUsername(accounts)
-
-
-// // create username ends
-
-
-// // login starts
-
+  // clear input
+  inputTransferTo.value = "";
+  inputTransferAmount.value = "";
+  inputTransferTo.blur();
+  inputTransferAmount.blur();
 
 
-// btnLogin.addEventListener('click', (e) => {
-//   e.preventDefault();
-
-//   currentAcc = accounts.find((account) => inputLoginUsername.value === account.username);
-
-//   if(currentAcc.password === Number(inputLoginPassword.value)){
-//     // welcome msg
-
-//     labelWelcome.textContent= `Welcome, ${currentAcc.owner.split(" ").at(0)}`
-
-//     // update ui
-
-//     containerApp.style.opacity = 1;
-//   }
-
-// })
+})
 
 
-// // login ends
+
+
+// transfer money ends
+
+// loan start
+
+btnLoan.addEventListener('click', (e) => {
+  e.preventDefault()
+
+  const amount = Number(inputLoanAmount.value);
+  const loanRules = currentAcc.movements.some((move) => move >= amount * 0.1)
+
+  if (amount > 0 && loanRules) {
+    // add money as deposit
+    currentAcc.movements.push(amount);
+
+    // update ui
+    updateUI(currentAcc);
+
+    // notification
+    labelWelcome.textContent = "Loan Successfully";
+  } else {
+    labelWelcome.textContent = "Loan Failed";
+  }
+
+  // clear input
+  inputLoanAmount.value = "";
+})
+
+
+// loan ends
+
+
+// delete acc starts
+
+
+btnClose.addEventListener('click' , (e) => {
+  e.preventDefault();
+
+  if(currentAcc.username === inputCloseUsername.value && currentAcc.password === Number(inputClosePassword.value)){
+
+    const targetIndex = accounts.findIndex((acc) => acc.username === currentAcc.username);
+
+
+    // dlt
+    accounts.splice(targetIndex, 1);
+
+    // updateUI
+    containerApp.style.opacity = 0;
+
+    // notifitation
+    labelWelcome.textContent = "Your Account Deleted";
+    btnLogout.style.opacity = 0;
+    form.style.display = "flex";
+  }else{
+    labelWelcome.textContent = "Your Account Can Noot Be Deleted";
+  }
+
+  // clear input
+
+  inputCloseUsername.value = "";
+  inputClosePassword.value = "";
+  inputCloseUsername.blur();
+  inputClosePassword.blur();
+})
+
+
+// delete acc ends
+
+
+// sort starts
+
+let sorted = false;
+
+btnSort.addEventListener('click' , () => {
+
+  displayMovements(currentAcc, !sorted);
+  sorted = !sorted;
+})
+
+
+// sort ends
+
+
 
 
 
