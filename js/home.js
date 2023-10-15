@@ -144,6 +144,7 @@ btnLogin.addEventListener('click', (e) => {
   inputLoginPassword.value = "";
   inputLoginUsername.blur();
   inputLoginPassword.blur();
+  btnLogout.style.opacity = 1;
 
 
 
@@ -157,6 +158,10 @@ btnLogin.addEventListener('click', (e) => {
 btnLogout.addEventListener('click', () => {
 
   containerApp.style.opacity = 0;
+
+  btnLogout.style.opacity = 0;
+
+   labelWelcome.textContent = "Log in to get started";
 
   form.style.display = "flex";
 
