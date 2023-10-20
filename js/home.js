@@ -144,12 +144,14 @@ function createUsername(accounts){
   accounts.forEach(account => {
     account.username = account.owner.toLowerCase().split(" ").map(word => word.at(0)).join("")
 
-    console.log(account.username)
+    console.log(account.username, account.password)
   })
 
 }
 
 createUsername(accounts)
+
+
 
 
 // create username ends
@@ -188,6 +190,7 @@ btnLogin.addEventListener('click', (e) => {
     // update ui
 
     containerApp.style.opacity = 1;
+    
 
     if(timer){
       clearInterval(timer);
