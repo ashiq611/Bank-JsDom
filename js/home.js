@@ -91,6 +91,23 @@ function updateUI(currentAcc) {
 ////////////////////
 
 
+// format currency starts
+
+
+function formatCurrency(amount, locale, currency){
+   const option = {
+    style: 'currency',
+    currency: currency,
+   }
+
+  return new Intl.NumberFormat(locale, option).format(amount);
+}
+
+
+
+// format currency ends
+
+
 // create username starts
 
 function createUsername(accounts){
@@ -179,12 +196,14 @@ function displayMovements (account, sort = false){
 
   moves.forEach((move,i) => {
 
+    const formatMove = formatCurrency(move, account.locale, account.currency);
+
     const type = (move > 0) ? "deposit" : "withdrawal"
     const movementsHtml = `
      <div class="movements-row">
           <div class="movements-type movements-type-${type}">${i+1} ${type}</div>
           <div class="movements-date">5 days ago</div>
-          <div class="movements-value">${move}$</div>
+          <div class="movements-value">${formatMove}</div>
         </div>
     `;
 
@@ -207,17 +226,21 @@ function displaySumamry(account){
   // income
   const income = account.movements.filter(move => move > 0).reduce((acc, deposit) => acc + deposit)
 
-  labelSumIn.textContent= `${income}$`
+  labelSumIn.textContent= formatCurrency(income, account.locale, account.currency)
 
   // outcome
   const outcome = account.movements.filter(move => move < 0).reduce((acc,withdrawal) => acc + withdrawal)
 
-  labelSumOut.textContent = `${Math.abs(outcome)}$`
+  labelSumOut.textContent = formatCurrency(Math.abs(outcome),account.locale, account.currency)
 
   // interest
   const interest = account.movements.filter(move => move > 0).map(deposit => (deposit * account.interestRate) / 100 ).filter(interest => interest >= 1).reduce((acc,interest) => acc + interest)
 
-  labelSumInterest.textContent = `${interest}$`
+  labelSumInterest.textContent = formatCurrency(
+    interest,
+    account.locale,
+    account.currency
+  );
 
 }
 
@@ -233,7 +256,7 @@ function displayBalance (account){
 
   account.balance = account.movements.reduce((acc,move) => acc + move)
 
-  labelBalance.textContent = `${account.balance}$`;
+  labelBalance.textContent = formatCurrency(account.balance, account.locale, account.currency);
 
 }
 
