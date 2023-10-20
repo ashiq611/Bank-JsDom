@@ -81,7 +81,11 @@ nav {
   /* display: none; */
 }
 
+.nav_left{
+  display: flex;
+  align-items: center;
 
+}
 
 
 
@@ -218,22 +222,25 @@ nav {
 }
 
 .operation-transfer {
-  background-color: #00b79f;
+  background-color: #004225;
+  color: whitesmoke;
 }
 
 .operation-loan {
-  background-color: #f3442a;
+  background-color: #D80032;
+  color: whitesmoke;
 }
 
 .operation-close {
-  background-color: #fdb850;
+  background-color: #18122B;
+  color: whitesmoke;
 }
 
 h2 {
   margin-bottom: 1.5rem;
   font-size: 1.7rem;
   font-weight: 600;
-  color: #333;
+  color: whitesmoke;
 }
 
 .form {
@@ -278,6 +285,11 @@ h2 {
   background-color: #fff;
   cursor: pointer;
   transition: all 0.3s;
+}
+
+.form-btn:hover{
+  background-color: #F8F0E5;
+  scale: 1.2;
 }
 
 .form-btn:focus {
