@@ -7,17 +7,17 @@ const accounts = [
     movements: [2500, 500, -750, 1200, 3200, -1500, 500, 1200, -1750, 1800],
     interestRate: 1.5, // %
     password: 1234,
-    movementsDates: [
-      "2021-11-18T21:31:17.178Z",
-      "2021-12-23T07:42:02.383Z",
-      "2022-01-28T09:15:04.904Z",
-      "2022-04-01T10:17:24.185Z",
-      "2022-07-08T14:11:59.604Z",
-      "2022-09-10T17:01:17.194Z",
-      "2022-09-12T23:36:17.929Z",
-      "2022-09-15T12:51:31.398Z",
-      "2022-09-19T06:41:26.190Z",
-      "2022-09-21T08:11:36.678Z",
+    movementsDates: [  //iso
+      "2022-11-18T21:31:17.178Z",
+      "2022-12-23T07:42:02.383Z",
+      "2023-01-28T09:15:04.904Z",
+      "2023-04-01T10:17:24.185Z",
+      "2023-07-08T14:11:59.604Z",
+      "2023-09-10T17:01:17.194Z",
+      "2023-09-12T23:36:17.929Z",
+      "2023-09-15T12:51:31.398Z",
+      "2023-09-19T06:41:26.190Z",
+      "2023-09-21T08:11:36.678Z",
     ],
     currency: "USD",
     locale: "en-US",
@@ -28,16 +28,16 @@ const accounts = [
     interestRate: 1.3, // %
     password: 5678,
     movementsDates: [
-      "2021-12-11T21:31:17.671Z",
-      "2021-12-27T07:42:02.184Z",
-      "2022-01-05T09:15:04.805Z",
-      "2022-02-14T10:17:24.687Z",
-      "2022-03-12T14:11:59.203Z",
-      "2022-05-16T17:01:17.392Z",
-      "2022-08-10T23:36:17.522Z",
-      "2022-09-03T12:51:31.491Z",
-      "2022-09-18T06:41:26.394Z",
-      "2022-09-21T08:11:36.276Z",
+      "2022-12-11T21:31:17.671Z",
+      "2022-12-27T07:42:02.184Z",
+      "2023-02-14T10:17:24.687Z",
+      "2023-01-05T09:15:04.805Z",
+      "2023-03-12T14:11:59.203Z",
+      "2023-05-16T17:01:17.392Z",
+      "2023-08-10T23:36:17.522Z",
+      "2023-09-03T12:51:31.491Z",
+      "2023-09-18T06:41:26.394Z",
+      "2023-09-21T08:11:36.276Z",
     ],
     currency: "EUR",
     locale: "en-GB",
@@ -91,6 +91,34 @@ function updateUI(currentAcc) {
 ////////////////////
 
 
+
+// move day starts
+
+function formatMoveDate(date, locale){
+  const calculateDays = (date1, date2) => Math.round(Math.abs(date2-date1)/ (24*60*60*1000));
+
+  const daysCount = calculateDays(new Date(), date);
+
+  if (daysCount === 0) {
+    return "Today";
+  }else if (daysCount === 1){
+    return "Yesterday";
+  }else if (daysCount <= 7){
+    return `${daysCount} days ago`
+  }else{
+    return new Intl.DateTimeFormat(locale, {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    }).format(date);
+  }
+
+}
+
+
+// move day ends
+
+
 // format currency starts
 
 
@@ -139,6 +167,22 @@ btnLogin.addEventListener('click', (e) => {
     // welcome msg
 
     labelWelcome.textContent= `Welcome, ${currentAcc.owner.split(" ").at(0)}`
+
+
+    // format Date 
+
+    const loginDate = new Date();
+
+    const options = {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+
+    }
+
+    labelDate.textContent = new Intl.DateTimeFormat(currentAcc.locale, options).format(loginDate);
 
     // update ui
 
@@ -198,11 +242,15 @@ function displayMovements (account, sort = false){
 
     const formatMove = formatCurrency(move, account.locale, account.currency);
 
+    const date = new Date (account.movementsDates[i]);
+
+    const displayDate = formatMoveDate(date, account.locale);
+
     const type = (move > 0) ? "deposit" : "withdrawal"
     const movementsHtml = `
      <div class="movements-row">
           <div class="movements-type movements-type-${type}">${i+1} ${type}</div>
-          <div class="movements-date">5 days ago</div>
+          <div class="movements-date">${displayDate}</div>
           <div class="movements-value">${formatMove}</div>
         </div>
     `;
@@ -280,6 +328,16 @@ btnTransfer.addEventListener('click', (e) =>{
     currentAcc.movements.push(-amount);
     recieverAcc.movements.push(amount);
 
+    // add current date
+
+    currentAcc.movementsDates.push(new Date().toISOString());
+
+    recieverAcc.movementsDates.push(new Date().toISOString());
+
+
+
+    // update ui
+
     updateUI(currentAcc);
 
     labelWelcome.textContent = "Transaction Success";
@@ -314,6 +372,10 @@ btnLoan.addEventListener('click', (e) => {
   if (amount > 0 && loanRules) {
     // add money as deposit
     currentAcc.movements.push(amount);
+
+    // add current date
+
+    currentAcc.movementsDates.push(new Date().toISOString());
 
     // update ui
     updateUI(currentAcc);
