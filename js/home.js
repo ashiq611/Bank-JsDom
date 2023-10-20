@@ -78,6 +78,7 @@ const inputClosePassword = document.querySelector(".form-input-password");
 // starts the work with Bismillah
 
 let currentAcc;
+let timer;
 
 function updateUI(currentAcc) {
   displayMovements(currentAcc);
@@ -188,6 +189,11 @@ btnLogin.addEventListener('click', (e) => {
 
     containerApp.style.opacity = 1;
 
+    if(timer){
+      clearInterval(timer);
+    }
+    timer = timeout();
+
     updateUI(currentAcc);
 
     form.style.display = "none"
@@ -221,6 +227,11 @@ btnLogout.addEventListener('click', () => {
   containerApp.style.opacity = 0;
 
   btnLogout.style.opacity = 0;
+
+  if (timer) {
+    clearInterval(timer);
+  }
+  
 
    labelWelcome.textContent = "Log in to get started";
 
@@ -334,6 +345,13 @@ btnTransfer.addEventListener('click', (e) =>{
 
     recieverAcc.movementsDates.push(new Date().toISOString());
 
+    // timeout
+
+    if (timer) {
+      clearInterval(timer);
+    }
+    timer = timeout();
+
 
 
     // update ui
@@ -342,6 +360,10 @@ btnTransfer.addEventListener('click', (e) =>{
 
     labelWelcome.textContent = "Transaction Success";
   }else{
+    if (timer) {
+      clearInterval(timer);
+    }
+    timer = timeout();
     labelWelcome.textContent = "Transaction Failed";
   }
 
@@ -377,12 +399,23 @@ btnLoan.addEventListener('click', (e) => {
 
     currentAcc.movementsDates.push(new Date().toISOString());
 
+    // timeout
+
+    if (timer) {
+      clearInterval(timer);
+    }
+    timer = timeout();
+
     // update ui
     updateUI(currentAcc);
 
     // notification
     labelWelcome.textContent = "Loan Successfully";
   } else {
+    if (timer) {
+      clearInterval(timer);
+    }
+    timer = timeout();
     labelWelcome.textContent = "Loan Failed";
   }
 
@@ -416,6 +449,10 @@ btnClose.addEventListener('click' , (e) => {
     btnLogout.style.opacity = 0;
     form.style.display = "flex";
   }else{
+    if (timer) {
+      clearInterval(timer);
+    }
+    timer = timeout();
     labelWelcome.textContent = "Your Account Can Noot Be Deleted";
   }
 
@@ -431,6 +468,39 @@ btnClose.addEventListener('click' , (e) => {
 // delete acc ends
 
 
+// timer starts
+
+function timeout() {
+  labelTimer.textContent = "";
+
+  let setTime = 600;
+
+  const clock = () => {
+    const min = String(Math.trunc(setTime/60)).padStart(2, 0);
+    const sec = String(setTime % 60).padStart(2,0);
+
+    labelTimer.textContent = `${min}:${sec}`;
+
+    if(setTime === 0){
+      clearInterval(timer);
+      labelWelcome.textContent = "You are Inactive & have been logged out!";
+      containerApp.style.opacity = 0;
+      btnLogout.style.opacity = 0;
+      form.style.display = "flex";
+    }
+    setTime--;
+  }
+  clock();
+
+  timer = setInterval(clock, 1000);
+
+  return timer;
+}
+
+
+// timer ends
+
+
 // sort starts
 
 let sorted = false;
@@ -443,6 +513,8 @@ btnSort.addEventListener('click' , () => {
 
 
 // sort ends
+
+
 
 
 
